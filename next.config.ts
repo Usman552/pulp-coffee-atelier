@@ -1,8 +1,12 @@
 import type { NextConfig } from "next";
 
+// Static export for GitHub Pages. Served from /<repo-name>/ unless overridden.
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+
 const nextConfig: NextConfig = {
-  cacheComponents: true,
-  partialPrefetching: true,
+  output: "export",
+  basePath,
+  trailingSlash: true,
   turbopack: {
     rules: {
       "*.css": {
@@ -12,12 +16,8 @@ const nextConfig: NextConfig = {
     },
   },
   images: {
-    qualities: [70, 80],
-    formats: ["image/avif", "image/webp"],
-    remotePatterns: [
-      { protocol: "https", hostname: "images.unsplash.com", pathname: "/photo-**" },
-      { protocol: "https", hostname: "images.pexels.com", pathname: "/photos/**" },
-    ],
+    loader: "custom",
+    loaderFile: "./lib/imageLoader.ts",
   },
 };
 

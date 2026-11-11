@@ -9,6 +9,7 @@ import { useReveals } from "@/animations/useReveals";
 import { cn } from "@/lib/cn";
 import { contactTopics, validateContact, type ContactInput, type FieldErrors } from "@/lib/forms";
 import { useNow } from "@/lib/useNow";
+import { submitContact } from "@/lib/submit";
 import { ChapterHead } from "@/components/ui/ChapterHead";
 import { Cta } from "@/components/ui/Cta";
 import { FieldShell, TextArea, TextInput } from "@/components/ui/Field";
@@ -157,14 +158,9 @@ function ContactForm() {
     if (!check.valid) return setErrors(check.errors);
     setState("sending");
     try {
-      const res = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(check.data),
-      });
-      const json = await res.json();
+      const json = await submitContact(check.data);
       if (!json.ok) {
-        setErrors(json.errors ?? {});
+        setErrors(json.errors);
         return setState("idle");
       }
       setReference(json.reference);

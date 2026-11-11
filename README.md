@@ -5,6 +5,8 @@
 
 PULP is a concept brand: a contemporary specialty coffee destination with an urban, premium personality. Instead of the usual brown-and-beige coffee template, the identity starts from the **coffee cherry** (a red fruit) and borrows the language of an independent magazine — each season is an "Issue", each section a "chapter".
 
+**Live demo:** https://usman552.github.io/pulp-coffee-atelier/
+
 ![Hero](docs/screenshots/01-hero.jpg)
 
 ## Highlights
@@ -49,7 +51,7 @@ PULP is a concept brand: a contemporary specialty coffee destination with an urb
 
 ## Tech stack
 
-- **Next.js 16** (App Router, no `src/` directory, Turbopack, Cache Components)
+- **Next.js 16** (App Router, no `src/` directory, Turbopack, static export)
 - **React 19** and **TypeScript**
 - **Tailwind CSS v4**
 - **GSAP 3** — ScrollTrigger, SplitText (via `@gsap/react`)
@@ -72,22 +74,21 @@ npm install
 npm run dev          # http://localhost:3000
 ```
 
-Production build:
+Production build (static export to `out/`):
 
 ```bash
 npm run build
-npm start
+npx serve out        # preview the exported site
 ```
+
+Deployed automatically to GitHub Pages by `.github/workflows/deploy.yml` on every push to `main`. If you host it under a sub-path, set `NEXT_PUBLIC_BASE_PATH` (e.g. `/pulp-coffee-atelier`) at build time; leave it empty for a root domain.
 
 Lint: `npm run lint`
 
 ## Project structure
 
 ```
-app/                 layout, page, global styles, API route handlers
-  api/reserve        POST — validates and confirms a reservation
-  api/contact        POST — contact form
-  api/subscribe      POST — newsletter
+app/                 layout, page, global styles
 animations/          GSAP hooks, kept separate from content components
 components/
   layout/            Nav, IndexMenu, Preloader, ScrollProgress, Footer, FloatingReserve
@@ -95,7 +96,7 @@ components/
   ui/                Cta, Dialog, Photo, ReserveModal, Lightbox, Field …
   menu/              MenuDetail
 content/             brand details, hours, menu, story copy, image URLs
-lib/                 form validation, helpers
+lib/                 form validation, demo submit layer, image loader
 ```
 
 ## Make it your own
@@ -107,7 +108,7 @@ All business details are in one place:
 - `content/story.ts` — ritual, philosophy, space and programme copy
 - `content/images.ts` — every photograph (swap in your own)
 
-The API routes validate input and return confirmations but only log to the server console. To go live, connect `deliver()` in `app/api/reserve/route.ts` (and the contact / subscribe routes) to your email or booking provider.
+The site is a static export, so the booking, contact and newsletter forms run in **demo mode**: they validate in the browser and show a confirmation with a reference number, but nothing is sent anywhere. To go live, connect `deliver()` in `lib/submit.ts` to your email or booking provider (Resend, Formspree, OpenTable, a serverless function …).
 
 ## Notes
 

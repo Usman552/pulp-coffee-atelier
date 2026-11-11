@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { useNow } from "@/lib/useNow";
+import { submitReservation } from "@/lib/submit";
 import { CalendarPlus, Check, Minus, Navigation, Plus, X } from "lucide-react";
 import { useSite } from "@/components/providers/SiteProvider";
 import { brand, hours, mapsDirectionsUrl, toMinutes } from "@/content/brand";
@@ -117,14 +118,9 @@ export function ReserveModal() {
     }
     setStatus("sending");
     try {
-      const res = await fetch("/api/reserve", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(check.data),
-      });
-      const json = await res.json();
+      const json = await submitReservation(check.data);
       if (!json.ok) {
-        setErrors(json.errors ?? {});
+        setErrors(json.errors);
         setStatus("idle");
         return;
       }

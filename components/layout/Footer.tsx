@@ -6,6 +6,7 @@ import { brand, chapters, hours } from "@/content/brand";
 import { gsap, MOTION, prefersReducedMotion, useGSAP } from "@/animations/gsap";
 import { RollText } from "@/components/ui/RollText";
 import { Cta } from "@/components/ui/Cta";
+import { submitSubscribe } from "@/lib/submit";
 
 /** The back cover: next-issue teaser, newsletter, index and a wordmark cropped by the page edge. */
 export function Footer() {
@@ -39,12 +40,7 @@ export function Footer() {
     }
     setState("sending");
     try {
-      const res = await fetch("/api/subscribe", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      });
-      const json = await res.json();
+      const json = await submitSubscribe(email);
       if (!json.ok) throw new Error(json.error);
       setState("done");
       setMessage(`You're on the list. Issue Nº 08 lands in ${brand.nextIssue.date.split(" ")[0]}.`);
